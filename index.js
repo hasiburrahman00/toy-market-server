@@ -26,6 +26,13 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
 		await client.connect();
 
+		const collections = client.db('toy_market').collection('toys');
+
+		// get all toys from database 
+		app.get('/toys', async(req, res) => {
+			const result = await collections.find().toArray();
+			res.send(result);
+		})
 
 
 
