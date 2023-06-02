@@ -25,21 +25,34 @@ async function run() {
 	try {
     // Connect the client to the server	(optional starting in v4.7)
 		await client.connect();
-
 		const collections = client.db('toy_market').collection('toys');
 
-		// get all toys from database 
+		// get all toys from database:
 		app.get('/toys', async(req, res) => {
-			const result = await collections.find().toArray();
+			let query = {};
+			if(req.query?.email){
+				query = {sellerEmail: req.query.email}
+			}
+			const result = await collections.find(query).toArray();
 			res.send(result);
 		})
+		// INSERT single data in database : 
+		app.post('/toys', async(req, res) => {
+			const newToy = req.body;
+			const result = await collections.insertOne(newToy);
+			res.send(result);
 
+		})
+
+		// get specific data using id:
 		app.get('/toys/:id', async(req, res) => {
 			const id = req.params.id;
 			const query = {_id : new ObjectId(id)}
 			const result = await collections.findOne(query);
 			res.send(result);
 		})
+
+
 
 
 
