@@ -33,8 +33,12 @@ async function run() {
 			if (req.query?.email) {
 				query = { sellerEmail: req.query.email }
 			}
-			const result = await collections.find(query).toArray();
-			res.send(result);
+			try {
+				const result = await collections.find(query).limit(20).toArray();
+				res.send(result);
+			} catch (error) {
+				res.status(500).json({ message: 'Error fetching products' })
+			}
 		})
 		// INSERT single data in database : 
 		app.post('/toys', async (req, res) => {
